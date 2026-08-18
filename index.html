@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DeTLeng Automation · From Repetitive Work to Working Systems</title>
+  <meta name="description" content="What are you still doing manually? Show us the repetitive work. We'll work out how to automate it. DeTLeng Automation." />
+  <meta name="theme-color" content="#0d1110" />
+  <link rel="canonical" href="https://automation.detleng.com/" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <meta property="og:title" content="DeTLeng Automation" />
+  <meta property="og:description" content="From repetitive work to working systems." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://automation.detleng.com/" />
+  <style>
+    :root{
+      --ink:#0d1110;
+      --ink-2:#151b18;
+      --ink-3:#202824;
+      --paper:#f3f0e8;
+      --paper-2:#e8e3d8;
+      --paper-3:#fbf8f1;
+      --white:#fffdf7;
+      --muted:#6e746e;
+      --line:rgba(13,17,16,.14);
+      --line-dark:rgba(255,255,255,.13);
+      --acid:#d9ff72;
+      --electric:#7bf0d0;
+      --signal:#ff704f;
+      --amber:#f4b850;
+      --radius:30px;
+      --radius-sm:19px;
+      --shell:min(1240px,calc(100vw - 44px));
+      --ease:cubic-bezier(.2,.72,.2,1);
+      --shadow:0 32px 90px rgba(13,17,16,.14);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    a{color:inherit}
+    button,input,textarea{font:inherit}
+    button{cursor:pointer}
+    .shell{width:var(--shell);margin-inline:auto}
+    .section{padding:120px 0;position:relative}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    .skip-link{position:fixed;top:10px;left:10px;z-index:9999;transform:translateY(-160%);background:var(--white);color:var(--ink);padding:10px 14px;border-radius:999px}.skip-link:focus{transform:none}
+    .grain{position:fixed;inset:0;pointer-events:none;z-index:99;opacity:.10;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E")}
+    ::selection{background:var(--ink);color:var(--acid)}
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity .85s var(--ease),transform .85s var(--ease)}
+    .reveal.visible{opacity:1;transform:none}
+
+    /* NAV */
+    .nav-wrap{position:fixed;left:0;right:0;top:18px;z-index:80;pointer-events:none}
+    .nav{pointer-events:auto;width:min(1190px,calc(100vw - 32px));height:66px;margin:auto;border:1px solid rgba(255,255,255,.38);background:rgba(243,240,232,.86);backdrop-filter:blur(20px);border-radius:999px;display:flex;align-items:center;padding:0 12px 0 18px;box-shadow:0 14px 40px rgba(13,17,16,.08);transition:.35s var(--ease)}
+    .nav.dark{background:rgba(13,17,16,.90);color:var(--white);border-color:rgba(255,255,255,.11)}
+    .brand{display:flex;align-items:center;gap:12px;text-decoration:none;white-space:nowrap}
+    .brand-mark{width:40px;height:40px;border-radius:14px;background:var(--ink);color:var(--acid);display:grid;place-items:center;font-weight:950;font-size:13px;letter-spacing:-.03em;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+    .dark .brand-mark{background:var(--acid);color:var(--ink)}
+    .brand-copy{display:flex;flex-direction:column;line-height:1.05}
+    .brand-copy strong{font-size:13px}
+    .brand-copy span{font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:var(--muted);margin-top:4px}
+    .dark .brand-copy span{color:rgba(255,255,255,.48)}
+    .nav-links{margin-left:auto;display:flex;gap:23px;align-items:center}
+    .nav-links a{text-decoration:none;font-size:12px;font-weight:650;opacity:.72}.nav-links a:hover{opacity:1}
+    .nav-cta{margin-left:18px;background:var(--ink);color:var(--white);text-decoration:none;border-radius:999px;padding:13px 18px;font-size:12px;font-weight:850;position:relative;z-index:2}
+    .dark .nav-cta{background:var(--acid);color:var(--ink)}
+    .nav-toggle{display:none;margin-left:auto;border:0;background:transparent;padding:8px;color:inherit}
+    .nav-toggle i{display:block;width:23px;height:1.5px;background:currentColor;margin:5px 0}
+
+    /* HERO */
+    .hero{min-height:100svh;padding:126px 0 74px;display:flex;align-items:center;background:radial-gradient(circle at 86% 16%,rgba(123,240,208,.18),transparent 25%),radial-gradient(circle at 18% 90%,rgba(217,255,114,.20),transparent 27%),var(--paper)}
+    .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:64px;align-items:center}
+    .eyebrow{display:flex;align-items:center;gap:11px;margin:0 0 25px;font-size:11px;text-transform:uppercase;letter-spacing:.18em;font-weight:900;color:#3e6c5e}.eyebrow::before{content:"";width:28px;height:1px;background:currentColor}
+    .hero h1{margin:0;max-width:760px;font-family:Georgia,"Times New Roman",serif;font-size:clamp(66px,7.55vw,118px);font-weight:500;line-height:.85;letter-spacing:-.067em}
+    .hero h1 em{font-style:normal;color:#3c8d79}
+    .hero-lead{font-size:clamp(23px,2.25vw,35px);line-height:1.15;letter-spacing:-.035em;font-weight:760;max-width:690px;margin:34px 0 0}
+    .hero-text{max-width:650px;margin:18px 0 0;color:var(--muted);font-size:17px}
+    .hero-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:31px}
+    .button{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:55px;padding:0 23px;border-radius:999px;background:var(--ink);color:var(--white);text-decoration:none;font-weight:850;border:1px solid var(--ink);transition:.25s var(--ease);position:relative;z-index:3;pointer-events:auto}
+    .button:hover{transform:translateY(-2px);background:#2d6e5e;border-color:#2d6e5e}
+    .button .arrow{transition:.25s var(--ease)}.button:hover .arrow{transform:translateX(4px)}
+    .micro{font-size:12px;color:var(--muted)}
+
+    .engine{position:relative;min-height:630px;border-radius:43px;overflow:hidden;background:var(--ink);color:var(--white);box-shadow:0 38px 100px rgba(13,17,16,.23);isolation:isolate}
+    .engine::before{content:"";position:absolute;inset:-20%;z-index:-2;pointer-events:none;background:radial-gradient(circle at var(--mx,68%) var(--my,34%),rgba(123,240,208,.18),transparent 18%),radial-gradient(circle at 32% 62%,rgba(217,255,114,.10),transparent 22%),radial-gradient(circle at 78% 72%,rgba(255,112,79,.12),transparent 22%)}
+    .engine::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:38px 38px;mask-image:linear-gradient(to bottom,black,transparent 92%)}
+    .engine-top{display:flex;justify-content:space-between;align-items:center;padding:24px 25px;color:rgba(255,255,255,.52);font-size:10px;text-transform:uppercase;letter-spacing:.16em}
+    .live{display:flex;align-items:center;gap:8px}.live::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--acid);box-shadow:0 0 0 6px rgba(217,255,114,.07);animation:pulse 2s infinite}@keyframes pulse{50%{box-shadow:0 0 0 13px rgba(217,255,114,0)}}
+    .engine-stage{position:absolute;inset:82px 24px 64px}
+    .manual-stack{position:absolute;left:4%;top:16%;width:34%;display:grid;gap:11px}
+    .manual-card{border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.055);border-radius:16px;padding:14px 15px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:rgba(255,255,255,.66);backdrop-filter:blur(8px);animation:drift 5s ease-in-out infinite}
+    .manual-card:nth-child(2){animation-delay:-1.3s}.manual-card:nth-child(3){animation-delay:-2.2s}.manual-card:nth-child(4){animation-delay:-3.4s}
+    .manual-card b{font-size:10px;color:var(--signal);letter-spacing:.08em}@keyframes drift{50%{transform:translateY(-6px)}}
+    .flow-line{position:absolute;left:36%;top:38%;width:30%;height:2px;background:linear-gradient(90deg,rgba(255,255,255,.08),var(--electric),rgba(255,255,255,.08));transform:rotate(-4deg);transform-origin:left;box-shadow:0 0 20px rgba(123,240,208,.25)}
+    .flow-line::after{content:"";position:absolute;width:12px;height:12px;border-radius:50%;background:var(--electric);top:-5px;left:0;box-shadow:0 0 18px rgba(123,240,208,.55);animation:travel 3s linear infinite}@keyframes travel{to{left:100%}}
+    .logic-core{position:absolute;left:43%;top:23%;width:31%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(255,255,255,.15);box-shadow:0 0 0 18px rgba(255,255,255,.025),0 0 0 42px rgba(255,255,255,.018)}
+    .logic-core::before,.logic-core::after{content:"";position:absolute;border-radius:50%;inset:14%;border:1px dashed rgba(217,255,114,.22);animation:spin 18s linear infinite;pointer-events:none}.logic-core::after{inset:-12%;border-style:solid;border-color:transparent transparent rgba(123,240,208,.38) transparent;animation-duration:8s;animation-direction:reverse}@keyframes spin{to{transform:rotate(360deg)}}
+    .logic-core div{width:62%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;text-align:center;background:var(--paper);color:var(--ink);box-shadow:0 24px 70px rgba(0,0,0,.35);position:relative;z-index:2}
+    .logic-core small{display:block;font-size:8px;text-transform:uppercase;letter-spacing:.16em;color:var(--muted);margin-bottom:7px}.logic-core strong{font-family:Georgia,serif;font-size:clamp(21px,2.3vw,32px);font-weight:500;line-height:.95}
+    .result-stack{position:absolute;right:4%;top:17%;width:27%;display:grid;gap:12px}
+    .result-card{min-height:74px;border-radius:18px;padding:14px;background:linear-gradient(135deg,rgba(217,255,114,.95),rgba(123,240,208,.84));color:var(--ink);display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 18px 50px rgba(0,0,0,.18)}
+    .result-card:nth-child(2){background:rgba(255,255,255,.93)}.result-card:nth-child(3){background:rgba(255,112,79,.92);color:var(--white)}
+    .result-card small{font-size:8px;text-transform:uppercase;letter-spacing:.15em;opacity:.58}.result-card strong{font-size:12px}
+    .engine-caption{position:absolute;left:25px;right:25px;bottom:21px;border-top:1px solid rgba(255,255,255,.11);padding-top:17px;display:flex;justify-content:space-between;align-items:end}
+    .engine-caption strong{font-family:Georgia,serif;font-size:20px;font-weight:500}.engine-caption span{font-size:10px;color:rgba(255,255,255,.44);text-align:right;max-width:190px}
+
+    /* BELT */
+    .belt{background:#2f7765;color:var(--white);overflow:hidden;transform:rotate(-.8deg) scale(1.01);box-shadow:0 14px 38px rgba(47,119,101,.2)}
+    .belt-track{display:flex;width:max-content;animation:marquee 31s linear infinite;padding:14px 0;font-size:13px;font-weight:850}
+    .belt-track span{display:flex;align-items:center;gap:20px;padding-right:20px}.belt-track i{font-style:normal;opacity:.52}@keyframes marquee{to{transform:translateX(-50%)}}
+
+    /* TYPE */
+    .kicker{margin:0 0 18px;text-transform:uppercase;letter-spacing:.18em;font-size:10px;font-weight:950;color:#3e6c5e}
+    .section h2{margin:0;font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:clamp(48px,6vw,82px);line-height:.94;letter-spacing:-.055em}
+    .lede{font-size:21px;color:var(--muted);max-width:750px;margin:23px 0 0}
+
+    /* RECOGNITION */
+    .recognition{background:var(--paper-3)}
+    .recognition-head{display:grid;grid-template-columns:1.05fr .95fr;gap:80px;align-items:end}
+    .recognition-head .aside{font-size:18px;color:var(--muted);padding-bottom:6px}
+    .repeat-grid{margin-top:62px;display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+    .repeat-card{min-height:188px;padding:25px;border:1px solid var(--line);border-radius:24px;background:var(--paper);display:flex;flex-direction:column;justify-content:space-between;transition:.3s var(--ease);position:relative;overflow:hidden}
+    .repeat-card::after{content:"";position:absolute;inset:auto -20% -55% 40%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(123,240,208,.16),transparent 64%);pointer-events:none}
+    .repeat-card:hover{transform:translateY(-6px);box-shadow:var(--shadow);background:var(--white)}
+    .repeat-card:nth-child(1){grid-column:span 5}.repeat-card:nth-child(2){grid-column:span 7}.repeat-card:nth-child(3),.repeat-card:nth-child(4),.repeat-card:nth-child(5){grid-column:span 4}.repeat-card:nth-child(6){grid-column:span 12;background:var(--ink);color:var(--white);min-height:150px;flex-direction:row;align-items:end}
+    .repeat-card q{font-size:24px;font-weight:760;letter-spacing:-.025em}.repeat-card p{margin:20px 0 0;color:var(--muted)}.repeat-card:nth-child(6) p{color:rgba(255,255,255,.58);max-width:500px}.repeat-card:nth-child(6) q{font-family:Georgia,serif;font-weight:500;font-size:42px}
+    .repeat-index{font-size:9px;text-transform:uppercase;letter-spacing:.16em;color:#3e6c5e}.repeat-card:nth-child(6) .repeat-index{color:var(--acid)}
+
+    /* PROCESS */
+    .process{background:var(--ink);color:var(--white);overflow:hidden}
+    .process::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 8% 16%,rgba(123,240,208,.12),transparent 27%),radial-gradient(circle at 88% 74%,rgba(217,255,114,.08),transparent 28%)}
+    .process .kicker{color:var(--electric)}.process .lede{color:rgba(255,255,255,.56)}
+    .process-grid{margin-top:72px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;position:relative}
+    .process-grid::before{content:"";position:absolute;left:6%;right:6%;top:49px;height:1px;background:linear-gradient(90deg,var(--signal),var(--electric),var(--acid));pointer-events:none}
+    .step{position:relative;padding-right:16px}.step-dot{width:98px;height:98px;border-radius:50%;display:grid;place-items:center;background:var(--ink);border:1px solid rgba(255,255,255,.14);font-family:Georgia,serif;font-size:24px;position:relative;z-index:2}.step:nth-child(2) .step-dot{border-color:rgba(123,240,208,.38)}.step:nth-child(3) .step-dot{border-color:rgba(217,255,114,.38)}.step:nth-child(4) .step-dot{background:var(--acid);color:var(--ink);border-color:var(--acid)}
+    .step h3{font-size:22px;margin:25px 0 10px}.step p{margin:0;color:rgba(255,255,255,.56);max-width:270px}
+    .process-mantra{margin-top:66px;border-top:1px solid rgba(255,255,255,.12);padding-top:22px;display:flex;justify-content:space-between;gap:25px}.process-mantra strong{font-family:Georgia,serif;font-size:29px;font-weight:500}.process-mantra span{color:rgba(255,255,255,.48);font-size:12px;text-align:right}
+
+    /* HANDOFF */
+    .handoff{background:var(--paper)}
+    .handoff-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:70px;align-items:center}
+    .handoff-copy p:not(.kicker){font-size:18px;color:var(--muted);max-width:600px}.handoff-copy strong{color:var(--ink)}
+    .handoff-visual{min-height:520px;border-radius:38px;background:var(--paper-3);border:1px solid var(--line);position:relative;overflow:hidden;box-shadow:var(--shadow)}
+    .handoff-visual::before{content:"REPEAT";position:absolute;right:-42px;top:78px;font-size:126px;font-weight:950;letter-spacing:-.07em;color:rgba(13,17,16,.035);transform:rotate(90deg);pointer-events:none}
+    .handoff-lane{position:absolute;left:8%;right:8%;top:50%;height:2px;background:linear-gradient(90deg,var(--signal),var(--amber),var(--electric),var(--acid));box-shadow:0 0 26px rgba(123,240,208,.25)}
+    .handoff-lane::after{content:"";position:absolute;width:14px;height:14px;border-radius:50%;background:var(--ink);top:-6px;left:0;animation:travel2 4s linear infinite}@keyframes travel2{to{left:100%}}
+    .handoff-node{position:absolute;width:130px;height:130px;border-radius:50%;display:grid;place-items:center;text-align:center;border:1px solid var(--line);background:var(--white);box-shadow:0 18px 50px rgba(13,17,16,.10);font-size:12px;font-weight:850;line-height:1.2}
+    .hn1{left:7%;top:29%}.hn2{left:38%;top:29%;background:var(--ink);color:var(--white);border-color:var(--ink)}.hn3{right:7%;top:29%;background:var(--acid);border-color:var(--acid)}
+    .handoff-note{position:absolute;left:9%;right:9%;bottom:8%;display:flex;justify-content:space-between;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted)}
+
+    /* AI */
+    .ai{background:var(--ink);color:var(--white);overflow:hidden}
+    .ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}.ai .kicker{color:var(--electric)}.ai h2{max-width:720px}.ai-copy p:not(.kicker){color:rgba(255,255,255,.58);font-size:18px}.ai-copy strong{color:var(--white)}
+    .ai-field{min-height:570px;border:1px solid rgba(255,255,255,.11);border-radius:40px;position:relative;overflow:hidden;background:radial-gradient(circle at 50% 50%,rgba(123,240,208,.10),transparent 32%),rgba(255,255,255,.025)}
+    .ai-field::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:34px 34px;pointer-events:none;mask-image:radial-gradient(circle,black,transparent 76%)}
+    .ai-field svg{position:absolute;inset:5%;width:90%;height:90%;animation:slowspin 35s linear infinite}@keyframes slowspin{to{transform:rotate(360deg)}}
+    .field-core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:180px;height:180px;border-radius:50%;display:grid;place-items:center;text-align:center;background:var(--paper);color:var(--ink);box-shadow:0 0 0 18px rgba(255,255,255,.025),0 26px 70px rgba(0,0,0,.28);z-index:2}.field-core span{font-size:9px;text-transform:uppercase;letter-spacing:.15em;color:var(--muted)}.field-core strong{font-family:Georgia,serif;font-size:28px;font-weight:500;line-height:.95}
+    .ai-bubble{position:absolute;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.055);backdrop-filter:blur(8px);padding:9px 12px;border-radius:999px;font-size:10px;color:rgba(255,255,255,.66);z-index:3}.ab1{left:10%;top:20%}.ab2{right:10%;top:24%}.ab3{right:9%;bottom:20%}.ab4{left:12%;bottom:18%}.ab5{left:42%;top:8%}
+
+    /* AUTOMATABLE */
+    .automatable{background:var(--paper-3)}
+    .auto-head{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:end}.auto-head p{color:var(--muted);font-size:18px;margin:0 0 6px}
+    .auto-grid{margin-top:60px;display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+    .auto-card{border:1px solid var(--line);border-radius:23px;padding:24px;background:var(--paper);min-height:220px;display:flex;flex-direction:column;justify-content:space-between;transition:.3s var(--ease)}.auto-card:hover{transform:translateY(-5px);background:var(--white);box-shadow:var(--shadow)}
+    .auto-card span{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#3e6c5e}.auto-card h3{font-family:Georgia,serif;font-size:31px;font-weight:500;margin:24px 0 10px;letter-spacing:-.03em}.auto-card p{font-size:13px;color:var(--muted);margin:0}
+
+    /* WORKFLOW LIBRARY */
+    .library{background:linear-gradient(180deg,var(--paper),#ebe6db 100%);overflow:hidden}
+    .library::before{content:"WF";position:absolute;right:-2vw;top:40px;font-size:min(33vw,500px);font-weight:950;line-height:.7;letter-spacing:-.12em;color:rgba(13,17,16,.025);pointer-events:none}
+    .library-head{display:grid;grid-template-columns:1.05fr .95fr;gap:80px;align-items:end;position:relative}.library-head p{color:var(--muted);font-size:18px;margin:0 0 5px}.library-note{display:inline-flex;gap:10px;align-items:center;margin-top:25px;padding:9px 13px;border:1px solid var(--line);border-radius:999px;font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted)}.library-note::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--amber)}
+    .wf-grid{margin-top:60px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;position:relative}
+    .wf-card{min-height:235px;border-radius:26px;border:1px solid var(--line);background:rgba(255,253,247,.68);padding:24px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;transition:.3s var(--ease);user-select:none}
+    .wf-card::before{content:attr(data-id);position:absolute;right:-4px;bottom:-30px;font-size:93px;font-weight:950;letter-spacing:-.08em;color:rgba(13,17,16,.038);pointer-events:none}
+    .wf-card:hover{transform:translateY(-4px);border-color:rgba(13,17,16,.22);background:var(--white)}
+    .wf-top{display:flex;justify-content:space-between;align-items:center}.wf-id{font-size:12px;font-weight:950;letter-spacing:.12em}.wf-status{font-size:8px;text-transform:uppercase;letter-spacing:.15em;padding:7px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+    .wf-card h3{font-family:Georgia,serif;font-size:29px;font-weight:500;letter-spacing:-.03em;margin:46px 0 8px}.wf-card p{margin:0;color:var(--muted);font-size:13px;max-width:250px}.wf-foot{display:flex;justify-content:space-between;align-items:end;margin-top:26px;font-size:10px;color:var(--muted)}.wf-arrow{font-size:19px;opacity:.2}
+    .wf-card.reserved{cursor:default}.wf-card.reserved:hover{transform:none}.wf-card.reserved .wf-status{background:rgba(13,17,16,.03)}
+    .library-mantra{margin-top:52px;border-top:1px solid var(--line);padding-top:25px;display:flex;justify-content:space-between;gap:25px}.library-mantra strong{font-family:Georgia,serif;font-size:29px;font-weight:500}.library-mantra span{font-size:12px;color:var(--muted);text-align:right}
+
+    /* ECOSYSTEM */
+    .ecosystem{background:var(--ink);color:var(--white)}.ecosystem .kicker{color:var(--electric)}
+    .eco-head{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:end}.eco-head p{color:rgba(255,255,255,.54);font-size:18px;margin:0 0 5px}
+    .eco-grid{margin-top:58px;display:grid;grid-template-columns:repeat(5,1fr);gap:11px}
+    .eco-card{min-height:200px;padding:20px;border-radius:21px;border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.035);text-decoration:none;display:flex;flex-direction:column;justify-content:space-between;transition:.28s var(--ease);position:relative;overflow:hidden}.eco-card::after{content:"↗";position:absolute;right:18px;top:15px;font-size:17px;color:rgba(255,255,255,.34);transition:.28s var(--ease)}.eco-card:hover{transform:translateY(-6px);background:rgba(255,255,255,.07);border-color:rgba(217,255,114,.34)}.eco-card:hover::after{color:var(--acid);transform:translate(2px,-2px)}.eco-card span{font-size:8px;text-transform:uppercase;letter-spacing:.16em;color:var(--electric)}.eco-card h3{font-family:Georgia,serif;font-weight:500;font-size:25px;margin:28px 0 7px}.eco-card p{font-size:11px;color:rgba(255,255,255,.46);margin:0}.eco-note{margin-top:35px;color:rgba(255,255,255,.47);font-size:12px}.eco-note strong{color:var(--white)}
+
+    /* DESK */
+    .desk{background:#2f7765;color:var(--white);overflow:hidden}
+    .desk::before{content:"AUTOMATE";position:absolute;right:-64px;top:180px;font-size:126px;font-weight:950;letter-spacing:-.07em;color:rgba(255,255,255,.045);transform:rotate(90deg);pointer-events:none;user-select:none}
+    .desk-grid{display:grid;grid-template-columns:.88fr 1.12fr;gap:70px;align-items:start}
+    .desk .kicker{color:var(--acid)}.desk-copy p:not(.kicker){font-size:18px;color:rgba(255,255,255,.7)}
+    .desk-points{margin-top:34px;display:grid;gap:10px}.desk-points div{border-top:1px solid rgba(255,255,255,.18);padding-top:11px;font-size:13px;color:rgba(255,255,255,.68)}
+    .form-card{background:var(--paper);color:var(--ink);padding:28px;border-radius:30px;box-shadow:0 28px 70px rgba(13,17,16,.18);position:relative;z-index:2}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:block;margin-bottom:15px}.field span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.13em;font-weight:850;color:var(--muted);margin:0 0 8px}.field input,.field textarea{width:100%;border:1px solid var(--line);background:var(--paper-3);border-radius:15px;padding:13px 14px;outline:none;color:var(--ink);transition:.2s}.field textarea{resize:vertical}.field input:focus,.field textarea:focus{border-color:#3e6c5e;box-shadow:0 0 0 3px rgba(123,240,208,.16)}
+    .submit{width:100%;border:0;min-height:57px;position:relative;z-index:5;pointer-events:auto}
+    .form-note{font-size:10px;color:var(--muted);margin:12px 0 0;text-align:center}.form-status{font-size:11px;color:#2f7765;text-align:center;margin:9px 0 0;min-height:17px}
+
+    /* FINAL */
+    .final{padding:120px 0;background:var(--paper-3);text-align:center}.final p{margin:0 0 18px;text-transform:uppercase;letter-spacing:.17em;font-size:10px;font-weight:900;color:#3e6c5e}.final h2{margin:0 auto 32px;max-width:960px;font-family:Georgia,serif;font-size:clamp(52px,7vw,96px);line-height:.9;letter-spacing:-.06em;font-weight:500}.final h2 em{font-style:normal;color:#3e6c5e}
+
+    /* FOOTER */
+    footer{background:var(--ink);color:var(--white);padding:62px 0 38px}.footer-grid{display:grid;grid-template-columns:1.25fr .8fr .8fr 1fr;gap:44px}.footer-brand{font-weight:950;font-size:30px;letter-spacing:-.05em}.footer-tag{font-family:Georgia,serif;font-size:18px;margin:8px 0 15px}.footer-grid p{color:rgba(255,255,255,.48);font-size:12px}.footer-label{font-size:8px!important;text-transform:uppercase;letter-spacing:.16em;color:var(--electric)!important;margin:5px 0 12px!important}.footer-links{display:grid;gap:7px}.footer-links a{text-decoration:none;color:rgba(255,255,255,.58);font-size:12px}.footer-links a:hover{color:var(--white)}.footer-end{display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;text-align:right;font-size:11px;color:rgba(255,255,255,.4)}
+
+    /* RESPONSIVE */
+    @media(max-width:1050px){
+      .hero-grid,.recognition-head,.handoff-grid,.ai-grid,.auto-head,.library-head,.eco-head,.desk-grid{grid-template-columns:1fr}
+      .hero-grid{gap:48px}.engine{min-height:590px}.recognition-head,.auto-head,.library-head,.eco-head{gap:25px}
+      .process-grid{grid-template-columns:1fr 1fr;gap:46px 20px}.process-grid::before{display:none}
+      .auto-grid{grid-template-columns:1fr 1fr}.wf-grid{grid-template-columns:1fr 1fr}.eco-grid{grid-template-columns:repeat(3,1fr)}
+      .footer-grid{grid-template-columns:1fr 1fr}.footer-end{align-items:flex-start;text-align:left;gap:22px}
+    }
+    @media(max-width:820px){
+      :root{--shell:min(100% - 28px,1240px)}.section{padding:88px 0}
+      .nav{height:60px}.brand-copy{display:none}.nav-links{position:absolute;left:16px;right:16px;top:70px;background:var(--paper-3);color:var(--ink);border:1px solid var(--line);border-radius:22px;padding:17px;display:none;flex-direction:column;align-items:stretch;gap:0;box-shadow:var(--shadow)}.nav.open .nav-links{display:flex}.nav-links a{padding:11px 5px;border-bottom:1px solid var(--line)}.nav-toggle{display:block}.nav-cta{margin-left:8px;padding:11px 14px}
+      .hero{padding-top:110px}.hero h1{font-size:clamp(58px,17vw,90px)}.engine{min-height:560px}.manual-stack{left:4%;width:33%}.result-stack{right:3%;width:28%}.logic-core{left:40%;width:35%}
+      .repeat-card:nth-child(n){grid-column:span 12}.repeat-card:nth-child(6){flex-direction:column;align-items:flex-start}.repeat-card:nth-child(6) q{font-size:34px}
+      .auto-grid,.wf-grid{grid-template-columns:1fr}.eco-grid{grid-template-columns:1fr 1fr}.form-row{grid-template-columns:1fr}.library-mantra,.process-mantra{flex-direction:column}.library-mantra span,.process-mantra span{text-align:left}
+    }
+    @media(max-width:560px){
+      .section{padding:76px 0}.hero-grid{gap:38px}.hero-lead{font-size:23px}.hero-text{font-size:15px}.engine{min-height:520px;border-radius:30px}.engine-stage{inset:75px 14px 62px}.manual-stack{left:2%;top:16%;width:32%;gap:7px}.manual-card{padding:10px 9px;font-size:9px}.manual-card b{font-size:8px}.logic-core{left:34%;top:26%;width:39%}.result-stack{right:1%;top:18%;width:25%;gap:8px}.result-card{min-height:62px;padding:9px}.result-card small{font-size:6px}.result-card strong{font-size:9px}.engine-caption strong{font-size:16px}.engine-caption span{display:none}.flow-line{left:30%;width:37%}
+      .process-grid{grid-template-columns:1fr}.step{padding:0}.handoff-visual{min-height:450px}.handoff-node{width:98px;height:98px;font-size:10px}.hn1{left:4%}.hn2{left:36%}.hn3{right:4%}.handoff-note{font-size:8px}
+      .auto-grid,.eco-grid{grid-template-columns:1fr}.field-core{width:150px;height:150px}.ai-field{min-height:480px}.footer-grid{grid-template-columns:1fr}.footer-end{align-items:flex-start}.desk::before{font-size:90px;right:-82px}
+    }
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+  </style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="nav-wrap">
+  <nav class="nav" id="nav" aria-label="Primary navigation">
+    <a class="brand" href="#top">
+      <span class="brand-mark">DA</span>
+      <span class="brand-copy"><strong>DeTLeng Automation</strong><span>Working systems</span></span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#how">How It Works</a>
+      <a href="#workflows">Workflows</a>
+      <a href="#ecosystem">Ecosystem</a>
+      <a href="#desk">Automation Desk</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Toggle navigation"><i></i><i></i></button>
+    <a class="nav-cta" href="#desk">Tell Us the Manual Work</a>
+  </nav>
+</div>
+
+<main id="main">
+<section class="hero" id="top">
+  <div class="shell hero-grid">
+    <div class="hero-copy reveal">
+      <p class="eyebrow">DeTLeng Automation · Practical automation</p>
+      <h1>What are you still doing <em>manually?</em></h1>
+      <p class="hero-lead">Show us the repetitive work. We’ll work out how to automate it.</p>
+      <p class="hero-text">Files. Emails. Documents. Reports. Data. Repeated checks. Customer requests. Internal processes. Or something you keep doing again and again.</p>
+      <div class="hero-actions">
+        <a class="button" href="#desk">Tell Us What You Do Manually <span class="arrow">→</span></a>
+        <span class="micro">No technical brief. Start with the work.</span>
+      </div>
+    </div>
+
+    <div class="engine reveal" id="engine" aria-label="Original animated visual showing repetitive manual tasks moving through understanding into automated results">
+      <div class="engine-top"><span>The Repetition Engine</span><span class="live">System thinking active</span></div>
+      <div class="engine-stage">
+        <div class="manual-stack">
+          <div class="manual-card"><span>Copy information</span><b>AGAIN</b></div>
+          <div class="manual-card"><span>Check inbox</span><b>AGAIN</b></div>
+          <div class="manual-card"><span>Rename files</span><b>AGAIN</b></div>
+          <div class="manual-card"><span>Prepare report</span><b>AGAIN</b></div>
+        </div>
+        <div class="flow-line"></div>
+        <div class="logic-core"><div><div><small>Understand first</small><strong>Map the<br>work</strong></div></div></div>
+        <div class="result-stack">
+          <div class="result-card"><small>Trigger</small><strong>Work starts itself</strong></div>
+          <div class="result-card"><small>Decision</small><strong>Rules + judgement</strong></div>
+          <div class="result-card"><small>Result</small><strong>Action completed</strong></div>
+        </div>
+      </div>
+      <div class="engine-caption"><strong>Manual → Understand → Automate → Result</strong><span>The tools can change. The working pattern stays clear.</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="belt" aria-hidden="true"><div class="belt-track"><span>Copying data <i>•</i> Checking the same thing <i>•</i> Sorting messages <i>•</i> Moving files <i>•</i> Preparing reports <i>•</i> Re-entering information <i>•</i> Repeating customer steps <i>•</i></span><span>Copying data <i>•</i> Checking the same thing <i>•</i> Sorting messages <i>•</i> Moving files <i>•</i> Preparing reports <i>•</i> Re-entering information <i>•</i> Repeating customer steps <i>•</i></span></div></div>
+
+<section class="section recognition">
+  <div class="shell">
+    <div class="recognition-head reveal">
+      <div><p class="kicker">Start with the work</p><h2>Automation does not begin with software.</h2></div>
+      <p class="aside">It begins with noticing what keeps repeating. Tell us what happens today. We can work out what should happen instead.</p>
+    </div>
+    <div class="repeat-grid">
+      <article class="repeat-card reveal"><span class="repeat-index">01 · Moving information</span><q>I keep copying this information.</q><p>Let the systems move it.</p></article>
+      <article class="repeat-card reveal"><span class="repeat-index">02 · Messages</span><q>I receive the same kind of emails every day.</q><p>Let the workflow read, organise and route them.</p></article>
+      <article class="repeat-card reveal"><span class="repeat-index">03 · Checking</span><q>Someone has to check this all the time.</q><p>Let the system check—and tell you when something matters.</p></article>
+      <article class="repeat-card reveal"><span class="repeat-index">04 · Reporting</span><q>We keep creating the same report.</q><p>Let the information collect, process and prepare itself.</p></article>
+      <article class="repeat-card reveal"><span class="repeat-index">05 · Documents</span><q>We manually enter information from documents.</q><p>Let the documents become usable data.</p></article>
+      <article class="repeat-card reveal"><div><span class="repeat-index">06 · Anything else</span><q>Our situation is completely different.</q></div><p><strong>Bring it anyway.</strong> Automation does not have to fit a predefined service before the conversation begins.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section process" id="how">
+  <div class="shell">
+    <div class="reveal"><p class="kicker">How we work</p><h2>See the work.<br>Map the pattern.<br>Build the route.</h2><p class="lede">The technology comes after we understand what needs to happen.</p></div>
+    <div class="process-grid">
+      <article class="step reveal"><div class="step-dot">01</div><h3>Show us the work</h3><p>Tell us what arrives, what somebody does with it, what gets checked and what happens next.</p></article>
+      <article class="step reveal"><div class="step-dot">02</div><h3>We map it</h3><p>Input → understand → decide → act → check → output. We make the working pattern visible.</p></article>
+      <article class="step reveal"><div class="step-dot">03</div><h3>We build it</h3><p>AI, APIs, software, scheduled tasks, files, email, cloud services—or something simpler.</p></article>
+      <article class="step reveal"><div class="step-dot">04</div><h3>It starts working</h3><p>The repeatable work moves to the system. People keep the decisions that need judgement.</p></article>
+    </div>
+    <div class="process-mantra reveal"><strong>The task chooses the automation.</strong><span>Not every problem needs AI. Not every workflow needs complicated software.</span></div>
+  </div>
+</section>
+
+<section class="section handoff">
+  <div class="shell handoff-grid">
+    <div class="handoff-copy reveal">
+      <p class="kicker">The hand-off</p>
+      <h2>Let computers repeat.<br>Let people decide.</h2>
+      <p>A good automation does not remove judgement. It removes the work people should not have to repeat.</p>
+      <p><strong>Copying. Checking. Moving. Sorting. Formatting. Waiting. Re-entering.</strong> Those are the places worth examining first.</p>
+      <a class="button" href="#desk">Show Us the Repetition <span class="arrow">→</span></a>
+    </div>
+    <div class="handoff-visual reveal" aria-label="Original visual showing a repeated task handed from a person to an automated system">
+      <div class="handoff-lane"></div>
+      <div class="handoff-node hn1">Human<br>starts with<br>the task</div>
+      <div class="handoff-node hn2">Rules +<br>understanding</div>
+      <div class="handoff-node hn3">System<br>keeps it<br>moving</div>
+      <div class="handoff-note"><span>Repetitive effort</span><span>Working automation</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section ai">
+  <div class="shell ai-grid">
+    <div class="ai-copy reveal"><p class="kicker">AI expands the capability</p><h2>AI can make more workflows possible. It still answers to the work.</h2><p>Modern AI can understand text, analyse information, classify content, extract meaning, draft responses, assist with decisions and work with other systems.</p><p><strong>We use AI when it genuinely helps.</strong> We use conventional automation when rules are better. And we combine both when the problem needs it.</p><p>The goal is not “AI automation”. The goal is a better working system.</p></div>
+    <div class="ai-field reveal" aria-label="Original AI capability visual">
+      <svg viewBox="0 0 600 600" aria-hidden="true"><g fill="none" stroke="rgba(255,255,255,.13)" stroke-width="1"><circle cx="300" cy="300" r="226"/><circle cx="300" cy="300" r="178"/><circle cx="300" cy="300" r="128"/></g><g fill="rgba(217,255,114,.82)"><circle cx="129" cy="170" r="4"/><circle cx="450" cy="135" r="4"/><circle cx="502" cy="349" r="4"/><circle cx="380" cy="500" r="4"/><circle cx="126" cy="430" r="4"/></g><g stroke="rgba(123,240,208,.28)" stroke-width="1"><line x1="129" y1="170" x2="300" y2="300"/><line x1="450" y1="135" x2="300" y2="300"/><line x1="502" y1="349" x2="300" y2="300"/><line x1="380" y1="500" x2="300" y2="300"/><line x1="126" y1="430" x2="300" y2="300"/></g></svg>
+      <div class="field-core"><div><span>Directed by</span><br><strong>the real<br>workflow</strong></div></div>
+      <span class="ai-bubble ab1">Understand</span><span class="ai-bubble ab2">Classify</span><span class="ai-bubble ab3">Decide</span><span class="ai-bubble ab4">Extract</span><span class="ai-bubble ab5">Assist</span>
+    </div>
+  </div>
+</section>
+
+<section class="section automatable">
+  <div class="shell">
+    <div class="auto-head reveal"><div><p class="kicker">What could be automated?</p><h2>Almost anything repetitive is worth examining.</h2></div><p>Some workflows are simple. Some combine several systems. The first job is understanding what actually repeats.</p></div>
+    <div class="auto-grid">
+      <article class="auto-card reveal"><span>01 · Email</span><div><h3>Email</h3><p>Receive → understand → classify → extract → route → respond → record.</p></div></article>
+      <article class="auto-card reveal"><span>02 · Documents</span><div><h3>Documents</h3><p>Receive → read → extract → organise → validate → store.</p></div></article>
+      <article class="auto-card reveal"><span>03 · Files</span><div><h3>Files</h3><p>Identify → rename → sort → convert → move → report.</p></div></article>
+      <article class="auto-card reveal"><span>04 · Data</span><div><h3>Data</h3><p>Collect → clean → compare → calculate → structure → deliver.</p></div></article>
+      <article class="auto-card reveal"><span>05 · Monitoring</span><div><h3>Monitoring</h3><p>Check → compare → detect → decide → alert.</p></div></article>
+      <article class="auto-card reveal"><span>06 · Reports</span><div><h3>Reports</h3><p>Collect → calculate → format → generate → deliver.</p></div></article>
+      <article class="auto-card reveal"><span>07 · Customers</span><div><h3>Requests</h3><p>Receive → understand → answer → escalate → record.</p></div></article>
+      <article class="auto-card reveal"><span>08 · Systems</span><div><h3>Integrations</h3><p>System A → information → rules → System B.</p></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="section library" id="workflows">
+  <div class="shell">
+    <div class="library-head reveal"><div><p class="kicker">The Workflow Library</p><h2>Real automation patterns. One workflow at a time.</h2><span class="library-note">Library growing with the work</span></div><p>Every workflow receives its own permanent reference—WF-01, WF-02, WF-03 … WF-N—and its own dedicated HTML page when it is ready.</p></div>
+
+    <div class="wf-grid">
+      <article class="wf-card reserved reveal" data-id="WF-01" aria-disabled="true"><div class="wf-top"><span class="wf-id">WF-01</span><span class="wf-status">Reserved</span></div><div><h3>Workflow</h3><p>Automation workflow reserved. Its page will activate when this workflow is published.</p></div><div class="wf-foot"><span>Future: wf-01.html</span><span class="wf-arrow">→</span></div></article>
+      <article class="wf-card reserved reveal" data-id="WF-02" aria-disabled="true"><div class="wf-top"><span class="wf-id">WF-02</span><span class="wf-status">Reserved</span></div><div><h3>Workflow</h3><p>Automation workflow reserved. Its page will activate when this workflow is published.</p></div><div class="wf-foot"><span>Future: wf-02.html</span><span class="wf-arrow">→</span></div></article>
+      <article class="wf-card reserved reveal" data-id="WF-03" aria-disabled="true"><div class="wf-top"><span class="wf-id">WF-03</span><span class="wf-status">Reserved</span></div><div><h3>Workflow</h3><p>Automation workflow reserved. Its page will activate when this workflow is published.</p></div><div class="wf-foot"><span>Future: wf-03.html</span><span class="wf-arrow">→</span></div></article>
+      <article class="wf-card reserved reveal" data-id="WF-04" aria-disabled="true"><div class="wf-top"><span class="wf-id">WF-04</span><span class="wf-status">Reserved</span></div><div><h3>Workflow</h3><p>Automation workflow reserved. Its page will activate when this workflow is published.</p></div><div class="wf-foot"><span>Future: wf-04.html</span><span class="wf-arrow">→</span></div></article>
+      <article class="wf-card reserved reveal" data-id="WF-05" aria-disabled="true"><div class="wf-top"><span class="wf-id">WF-05</span><span class="wf-status">Reserved</span></div><div><h3>Workflow</h3><p>Automation workflow reserved. Its page will activate when this workflow is published.</p></div><div class="wf-foot"><span>Future: wf-05.html</span><span class="wf-arrow">→</span></div></article>
+      <article class="wf-card reserved reveal" data-id="WF-06" aria-disabled="true"><div class="wf-top"><span class="wf-id">WF-06</span><span class="wf-status">Reserved</span></div><div><h3>Workflow</h3><p>Automation workflow reserved. Its page will activate when this workflow is published.</p></div><div class="wf-foot"><span>Future: wf-06.html</span><span class="wf-arrow">→</span></div></article>
+      <article class="wf-card reserved reveal" data-id="WF-07" aria-disabled="true"><div class="wf-top"><span class="wf-id">WF-07</span><span class="wf-status">Reserved</span></div><div><h3>Workflow</h3><p>Automation workflow reserved. Its page will activate when this workflow is published.</p></div><div class="wf-foot"><span>Future: wf-07.html</span><span class="wf-arrow">→</span></div></article>
+      <article class="wf-card reserved reveal" data-id="WF-08" aria-disabled="true"><div class="wf-top"><span class="wf-id">WF-08</span><span class="wf-status">Reserved</span></div><div><h3>Workflow</h3><p>Automation workflow reserved. Its page will activate when this workflow is published.</p></div><div class="wf-foot"><span>Future: wf-08.html</span><span class="wf-arrow">→</span></div></article>
+      <article class="wf-card reserved reveal" data-id="WF-09" aria-disabled="true"><div class="wf-top"><span class="wf-id">WF-09</span><span class="wf-status">Reserved</span></div><div><h3>Workflow</h3><p>Automation workflow reserved. Its page will activate when this workflow is published.</p></div><div class="wf-foot"><span>Future: wf-09.html</span><span class="wf-arrow">→</span></div></article>
+      <article class="wf-card reserved reveal" data-id="WF-10" aria-disabled="true"><div class="wf-top"><span class="wf-id">WF-10</span><span class="wf-status">Reserved</span></div><div><h3>Workflow</h3><p>Automation workflow reserved. Its page will activate when this workflow is published.</p></div><div class="wf-foot"><span>Future: wf-10.html</span><span class="wf-arrow">→</span></div></article>
+      <article class="wf-card reserved reveal" data-id="WF-11" aria-disabled="true"><div class="wf-top"><span class="wf-id">WF-11</span><span class="wf-status">Reserved</span></div><div><h3>Workflow</h3><p>Automation workflow reserved. Its page will activate when this workflow is published.</p></div><div class="wf-foot"><span>Future: wf-11.html</span><span class="wf-arrow">→</span></div></article>
+      <article class="wf-card reserved reveal" data-id="WF-12" aria-disabled="true"><div class="wf-top"><span class="wf-id">WF-12</span><span class="wf-status">Reserved</span></div><div><h3>Workflow</h3><p>Automation workflow reserved. Its page will activate when this workflow is published.</p></div><div class="wf-foot"><span>Future: wf-12.html</span><span class="wf-arrow">→</span></div></article>
+    </div>
+    <div class="library-mantra reveal"><strong>WF-13 → WF-14 → WF-15 → … → WF-N</strong><span>Different problems. Different workflows. The same principle: understand the work first.</span></div>
+  </div>
+</section>
+
+<section class="section ecosystem" id="ecosystem">
+  <div class="shell">
+    <div class="eco-head reveal"><div><p class="kicker">Selected work & DeTLeng ecosystem</p><h2>Automation is one part of a wider problem-solving environment.</h2></div><p>Explore the platforms, projects and working environments connected to DeTLeng. You do not need to choose one before contacting us.</p></div>
+    <div class="eco-grid">
+      <a class="eco-card reveal" href="https://www.detleng.com/" target="_blank" rel="noopener"><span>01 · Ecosystem</span><div><h3>DeTLeng</h3><p>Digital, technical and solution-development work.</p></div></a>
+      <a class="eco-card reveal" href="https://platform.detleng.com/" target="_blank" rel="noopener"><span>02 · Platform</span><div><h3>Platform</h3><p>Working environments for digital tools and solution delivery.</p></div></a>
+      <a class="eco-card reveal" href="https://insights.detleng.com/" target="_blank" rel="noopener"><span>03 · Thinking</span><div><h3>Insights</h3><p>Research, perspectives and practical thinking.</p></div></a>
+      <a class="eco-card reveal" href="https://casestudy.detleng.com/" target="_blank" rel="noopener"><span>04 · Evidence</span><div><h3>Case Studies</h3><p>Problems, approaches, experiments and outcomes.</p></div></a>
+      <a class="eco-card reveal" href="https://inteligencia.detleng.com/" target="_blank" rel="noopener"><span>05 · Intelligence</span><div><h3>Inteligencia</h3><p>Applied AI exploration within the wider ecosystem.</p></div></a>
+      <a class="eco-card reveal" href="https://agents.detleng.com/" target="_blank" rel="noopener"><span>06 · Agents</span><div><h3>Agents</h3><p>Agent-assisted capability and practical experiments.</p></div></a>
+      <a class="eco-card reveal" href="https://naveed.detleng.com/" target="_blank" rel="noopener"><span>07 · Business</span><div><h3>Business Solutions</h3><p>Practical business and digital problem-solving.</p></div></a>
+      <a class="eco-card reveal" href="https://naveed.aapkaustaad.com/" target="_blank" rel="noopener"><span>08 · Education</span><div><h3>Educational Solutions</h3><p>Technology-supported educational work.</p></div></a>
+      <a class="eco-card reveal" href="https://alnoor.aapkaustaad.com/" target="_blank" rel="noopener"><span>09 · Initiative</span><div><h3>AL-NOOR</h3><p>A practical educational initiative.</p></div></a>
+      <a class="eco-card reveal" href="https://mni.detleng.com/" target="_blank" rel="noopener"><span>10 · Solutions</span><div><h3>MNI</h3><p>Problem-led solution development from the Longford Work Hub.</p></div></a>
+    </div>
+    <p class="eco-note reveal"><strong>Different platforms. One wider capability.</strong> A problem may begin with automation and eventually need software, AI, information, a website or something simpler.</p>
+  </div>
+</section>
+
+<section class="section desk" id="desk">
+  <div class="shell desk-grid">
+    <div class="desk-copy reveal"><p class="kicker">The Automation Desk</p><h2>Tell us what you are doing manually.</h2><p>You do not need to know whether Python, AI, an API, software, an agent or something else should be used. Describe how the work happens today.</p><div class="desk-points"><div>No technical brief.</div><div>No software selection.</div><div>No need to know the answer first.</div></div></div>
+    <form class="form-card reveal" id="automationForm">
+      <div class="form-row">
+        <label class="field"><span>Your name *</span><input name="name" autocomplete="name" required placeholder="Your name"></label>
+        <label class="field"><span>Email *</span><input name="email" type="email" autocomplete="email" required placeholder="you@example.com"></label>
+      </div>
+      <label class="field"><span>What are you doing manually? *</span><textarea name="manual" rows="6" required placeholder="Describe the work in your own words. What happens now?"></textarea></label>
+      <label class="field"><span>What should happen instead?</span><textarea name="desired" rows="4" placeholder="What would you like to happen automatically?"></textarea></label>
+      <label class="field"><span>How often does this happen?</span><input name="frequency" placeholder="Every day, every week, every customer, whenever something arrives..."></label>
+      <button class="button submit" type="submit">Discuss Your Automation <span class="arrow">→</span></button>
+      <p class="form-note">This opens your email app with the Automation Desk message prepared for info@detleng.com.</p>
+      <p class="form-status" id="formStatus" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+<section class="final"><div class="shell reveal"><p>One useful question</p><h2>If a computer can keep doing it, <em>you probably shouldn’t have to.</em></h2><a class="button" href="#desk">Show Us What Keeps Repeating <span class="arrow">→</span></a></div></section>
+</main>
+
+<footer>
+  <div class="shell footer-grid">
+    <div><div class="footer-brand">DeTLeng Automation</div><p class="footer-tag">From repetitive work to working systems.</p><p>automation.detleng.com</p></div>
+    <div><p class="footer-label">Working idea</p><p><strong>Manual → Understand → Automate → Result</strong><br>The task chooses the automation.</p></div>
+    <div><p class="footer-label">Navigate</p><nav class="footer-links"><a href="#how">How It Works</a><a href="#workflows">Workflow Library</a><a href="#ecosystem">Ecosystem</a><a href="#desk">Automation Desk</a></nav></div>
+    <div class="footer-end"><span>Part of the DeTLeng problem-solving ecosystem.</span><span>© <span id="year">2026</span> DeTLeng</span></div>
+  </div>
+</footer>
+
+<script>
+  const nav=document.getElementById('nav'), toggle=document.getElementById('navToggle');
+  toggle?.addEventListener('click',()=>{const open=nav.classList.toggle('open');toggle.setAttribute('aria-expanded',open)});
+  document.querySelectorAll('.nav-links a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');toggle?.setAttribute('aria-expanded','false')}));
+
+  const reveals=document.querySelectorAll('.reveal');
+  const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}}),{threshold:.12});
+  reveals.forEach(el=>io.observe(el));
+
+  const darkSections=[...document.querySelectorAll('.process,.ai,.ecosystem,.desk')];
+  const setNavTone=()=>{
+    const y=42;
+    let dark=false;
+    darkSections.forEach(s=>{const r=s.getBoundingClientRect();if(r.top<=y&&r.bottom>=y)dark=true});
+    nav?.classList.toggle('dark',dark);
+  };
+  addEventListener('scroll',setNavTone,{passive:true});setNavTone();
+
+  const engine=document.getElementById('engine');
+  engine?.addEventListener('pointermove',e=>{const r=engine.getBoundingClientRect();engine.style.setProperty('--mx',`${((e.clientX-r.left)/r.width)*100}%`);engine.style.setProperty('--my',`${((e.clientY-r.top)/r.height)*100}%`)});
+
+  const form=document.getElementById('automationForm'), status=document.getElementById('formStatus');
+  form?.addEventListener('submit',e=>{
+    e.preventDefault();
+    if(!form.reportValidity()) return;
+    const data=new FormData(form);
+    const name=(data.get('name')||'').toString().trim();
+    const email=(data.get('email')||'').toString().trim();
+    const manual=(data.get('manual')||'').toString().trim();
+    const desired=(data.get('desired')||'').toString().trim();
+    const frequency=(data.get('frequency')||'').toString().trim();
+    const subject=`${email} — Automation problem for solution`;
+    const body=[
+      'DeTLeng Automation — Automation Desk',
+      '',
+      `Name: ${name}`,
+      `Email: ${email}`,
+      '',
+      'WHAT ARE YOU DOING MANUALLY?',
+      manual,
+      '',
+      'WHAT SHOULD HAPPEN INSTEAD?',
+      desired || 'Not specified',
+      '',
+      'HOW OFTEN DOES THIS HAPPEN?',
+      frequency || 'Not specified',
+      '',
+      `Submitted from: ${window.location.href}`
+    ].join('\n');
+    status.textContent='Opening your email app with the Automation Desk message ready to send…';
+    window.location.href=`mailto:info@detleng.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
+
+  document.getElementById('year').textContent=new Date().getFullYear();
+</script>
+</body>
+</html>
