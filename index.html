@@ -193,7 +193,25 @@
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:block;margin-bottom:15px}.field span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.13em;font-weight:850;color:var(--muted);margin:0 0 8px}.field input,.field textarea{width:100%;border:1px solid var(--line);background:var(--paper-3);border-radius:15px;padding:13px 14px;outline:none;color:var(--ink);transition:.2s}.field textarea{resize:vertical}.field input:focus,.field textarea:focus{border-color:#3e6c5e;box-shadow:0 0 0 3px rgba(123,240,208,.16)}
     .submit{width:100%;border:0;min-height:57px;position:relative;z-index:5;pointer-events:auto}
     .submit:disabled{cursor:wait;opacity:.68}
-    .form-note{font-size:10px;color:var(--muted);margin:12px 0 0;text-align:center}.form-status{font-size:11px;color:#2f7765;text-align:center;margin:9px 0 0;min-height:17px}.form-status.error{color:#a53c2d}.form-status.success{color:#216e5d;font-weight:750}.hp-field{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important;opacity:0!important;pointer-events:none!important}
+    .form-note{font-size:10px;color:var(--muted);margin:12px 0 0;text-align:center}.form-status{font-size:11px;color:#2f7765;text-align:center;margin:9px 0 0;min-height:17px}.form-status.error{color:#a53c2d}.form-status.success{color:#216e5d;font-weight:750}
+    /* Automation Desk: success-only confirmation popup */
+    body.brief-success-open{overflow:hidden}
+    .brief-success-overlay[hidden]{display:none!important}
+    .brief-success-overlay{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(7,19,20,.72);backdrop-filter:blur(4px)}
+    .brief-success-card{position:relative;width:100%;max-width:530px;padding:40px 32px 32px;border-radius:24px;background:#fff;color:#173348;text-align:center;box-shadow:0 22px 90px rgba(0,0,0,.25)}
+    .brief-success-close{position:absolute;right:12px;top:12px;width:40px;height:40px;border:1px solid #d7e2e9;background:#fff;color:#52647a;border-radius:10px;font-size:24px;cursor:pointer;line-height:1}
+    .brief-success-close:hover{background:#f0f5f8}
+    .brief-success-check{width:74px;height:74px;display:grid;place-items:center;margin:0 auto 18px;border-radius:50%;background:#dff7e9;color:#178457;font-size:48px;font-weight:700}
+    .brief-success-card h2{margin:0 0 13px;color:#14364d;font-size:clamp(24px,4vw,29px);font-weight:850;line-height:1.2;letter-spacing:-.03em}
+    .brief-success-card p{font-size:15px;line-height:1.65;color:#4c6174;margin:0 0 16px}
+    .brief-success-ref{padding:15px 14px;margin:18px 0;background:#eff5fa;border-radius:11px;color:#495d73;font-size:15px;overflow-wrap:anywhere}
+    .brief-success-ref strong{color:#173b54;font-weight:850}
+    .brief-success-card .brief-success-mail-note{font-size:13px;margin:12px 0 22px}
+    .brief-success-done{min-width:136px;padding:13px 24px;border:0;border-radius:10px;background:#1d5fa7;color:#fff;font-weight:800;font-size:16px;cursor:pointer}
+    .brief-success-done:hover{background:#154d8c}
+    .brief-success-card button:focus-visible{outline:3px solid #8ac9f6;outline-offset:3px}
+    @media(max-width:560px){.brief-success-card{padding:38px 21px 27px}}
+    .hp-field{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important;opacity:0!important;pointer-events:none!important}
 
     /* FINAL */
     .final{padding:120px 0;background:var(--paper-3);text-align:center}.final p{margin:0 0 18px;text-transform:uppercase;letter-spacing:.17em;font-size:10px;font-weight:900;color:#3e6c5e}.final h2{margin:0 auto 32px;max-width:960px;font-family:Georgia,serif;font-size:clamp(52px,7vw,96px);line-height:.9;letter-spacing:-.06em;font-weight:500}.final h2 em{font-style:normal;color:#3e6c5e}
@@ -413,12 +431,26 @@
       <label class="field"><span>What are you doing manually? *</span><textarea name="manual" rows="6" required placeholder="Describe the work in your own words. What happens now?"></textarea></label>
       <label class="field"><span>What should happen instead?</span><textarea name="desired" rows="4" placeholder="What would you like to happen automatically?"></textarea></label>
       <label class="field"><span>How often does this happen?</span><input name="frequency" placeholder="Every day, every week, every customer, whenever something arrives..."></label>
-      <button class="button submit" type="submit"><span class="submit-label">Send My Automation Brief</span> <span class="arrow">→</span></button>
-      <p class="form-note">Your brief will be sent securely to the DeTLeng Automation Desk. A confirmation will be emailed to you.</p>
+      <button class="button submit" type="submit"><span class="submit-label">Send My Request</span> <span class="arrow">→</span></button>
+      <p class="form-note">Your request will be sent securely to the DeTLeng Automation Desk. A confirmation will be emailed to you.</p>
       <p class="form-status" id="formStatus" aria-live="polite"></p>
     </form>
   </div>
 </section>
+
+
+<!-- Success popup; visible only after the API confirms submission. -->
+<div id="briefSuccessModal" class="brief-success-overlay" role="dialog" aria-modal="true" aria-labelledby="briefSuccessTitle" aria-describedby="briefSuccessDescription" hidden>
+  <div class="brief-success-card">
+    <button type="button" id="briefSuccessClose" class="brief-success-close" aria-label="Close confirmation">&times;</button>
+    <div class="brief-success-check" aria-hidden="true">&#10003;</div>
+    <h2 id="briefSuccessTitle">Request sent successfully!</h2>
+    <p id="briefSuccessDescription">Thank you for contacting DeTLeng Automation. We have received your request.</p>
+    <div class="brief-success-ref">Your reference: <strong id="briefSuccessReference"></strong></div>
+    <p class="brief-success-mail-note">We have emailed you a confirmation. Please also check your Spam/Junk folder.</p>
+    <button type="button" id="briefSuccessDone" class="brief-success-done">Done</button>
+  </div>
+</div>
 
 <section class="final"><div class="shell reveal"><p>One useful question</p><h2>If a computer can keep doing it, <em>you probably shouldn’t have to.</em></h2><a class="button" href="#desk">Show Us What Keeps Repeating <span class="arrow">→</span></a></div></section>
 </main>
@@ -459,6 +491,41 @@
   const startedAt=document.getElementById('formStartedAt');
   if(startedAt) startedAt.value=Date.now().toString();
 
+  // Keep mail sending and API submission unchanged; only change how success is shown.
+  const briefSuccessModal=document.getElementById('briefSuccessModal');
+  const briefSuccessReference=document.getElementById('briefSuccessReference');
+  const briefSuccessClose=document.getElementById('briefSuccessClose');
+  const briefSuccessDone=document.getElementById('briefSuccessDone');
+  const closeBriefSuccess=()=>{
+    briefSuccessModal.hidden=true;
+    document.body.classList.remove('brief-success-open');
+    submitButton?.focus();
+  };
+  const showBriefSuccess=(reference)=>{
+    briefSuccessReference.textContent=(typeof reference==='string' && reference.trim()) ? reference.trim() : 'See confirmation email';
+    briefSuccessModal.hidden=false;
+    document.body.classList.add('brief-success-open');
+    briefSuccessDone.focus();
+  };
+  briefSuccessClose?.addEventListener('click',closeBriefSuccess);
+  briefSuccessDone?.addEventListener('click',closeBriefSuccess);
+  briefSuccessModal?.addEventListener('click',event=>{
+    if(event.target===briefSuccessModal) closeBriefSuccess();
+  });
+  briefSuccessModal?.addEventListener('keydown',event=>{
+    if(event.key==='Escape'){
+      event.preventDefault();
+      closeBriefSuccess();
+    }else if(event.key==='Tab'){
+      // Keep keyboard focus inside the confirmation dialog.
+      if(event.shiftKey && document.activeElement===briefSuccessClose){
+        event.preventDefault();briefSuccessDone.focus();
+      }else if(!event.shiftKey && document.activeElement===briefSuccessDone){
+        event.preventDefault();briefSuccessClose.focus();
+      }
+    }
+  });
+
   form?.addEventListener('submit',async e=>{
     e.preventDefault();
     if(!form.reportValidity()) return;
@@ -469,15 +536,16 @@
     const controller=new AbortController();
     const timeout=setTimeout(()=>controller.abort(),45000);
     submitButton.disabled=true;
-    submitLabel.textContent='Sending your brief…';
+    submitLabel.textContent='Sending your request…';
     status.className='form-status';
-    status.textContent='Securely submitting your automation brief…';
+    status.textContent='Securely submitting your request…';
     try{
       const response=await fetch(API_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:controller.signal});
       const result=await response.json().catch(()=>({}));
       if(!response.ok) throw new Error(result.message || 'Submission failed');
-      status.className='form-status success';
-      status.textContent=`Brief received — check your inbox. Reference: ${result.reference}`;
+      status.className='form-status';
+      status.textContent='';
+      showBriefSuccess(result.reference);
       form.reset();
       delete form.dataset.submissionId;
       if(startedAt) startedAt.value=Date.now().toString();
@@ -487,7 +555,7 @@
     }finally{
       clearTimeout(timeout);
       submitButton.disabled=false;
-      submitLabel.textContent='Send My Automation Brief';
+      submitLabel.textContent='Send My Request';
     }
   });
 
