@@ -1,0 +1,9 @@
+{
+  "name": "automation-detleng-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Secure inquiry API for the DeTLeng Automation Desk",
+  "main": "server.js",
+  "scripts": { "start": "node server.js", "test": "node --test" },
+  "engines": { "node": ">=20" }
+}

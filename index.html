@@ -192,7 +192,8 @@
     .form-card{background:var(--paper);color:var(--ink);padding:28px;border-radius:30px;box-shadow:0 28px 70px rgba(13,17,16,.18);position:relative;z-index:2}
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:block;margin-bottom:15px}.field span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.13em;font-weight:850;color:var(--muted);margin:0 0 8px}.field input,.field textarea{width:100%;border:1px solid var(--line);background:var(--paper-3);border-radius:15px;padding:13px 14px;outline:none;color:var(--ink);transition:.2s}.field textarea{resize:vertical}.field input:focus,.field textarea:focus{border-color:#3e6c5e;box-shadow:0 0 0 3px rgba(123,240,208,.16)}
     .submit{width:100%;border:0;min-height:57px;position:relative;z-index:5;pointer-events:auto}
-    .form-note{font-size:10px;color:var(--muted);margin:12px 0 0;text-align:center}.form-status{font-size:11px;color:#2f7765;text-align:center;margin:9px 0 0;min-height:17px}
+    .submit:disabled{cursor:wait;opacity:.68}
+    .form-note{font-size:10px;color:var(--muted);margin:12px 0 0;text-align:center}.form-status{font-size:11px;color:#2f7765;text-align:center;margin:9px 0 0;min-height:17px}.form-status.error{color:#a53c2d}.form-status.success{color:#216e5d;font-weight:750}.hp-field{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important;opacity:0!important;pointer-events:none!important}
 
     /* FINAL */
     .final{padding:120px 0;background:var(--paper-3);text-align:center}.final p{margin:0 0 18px;text-transform:uppercase;letter-spacing:.17em;font-size:10px;font-weight:900;color:#3e6c5e}.final h2{margin:0 auto 32px;max-width:960px;font-family:Georgia,serif;font-size:clamp(52px,7vw,96px);line-height:.9;letter-spacing:-.06em;font-weight:500}.final h2 em{font-style:normal;color:#3e6c5e}
@@ -403,6 +404,8 @@
   <div class="shell desk-grid">
     <div class="desk-copy reveal"><p class="kicker">The Automation Desk</p><h2>Tell us what you are doing manually.</h2><p>You do not need to know whether Python, AI, an API, software, an agent or something else should be used. Describe how the work happens today.</p><div class="desk-points"><div>No technical brief.</div><div>No software selection.</div><div>No need to know the answer first.</div></div></div>
     <form class="form-card reveal" id="automationForm">
+      <label class="hp-field" aria-hidden="true">Leave this field empty<input name="website" tabindex="-1" autocomplete="off"></label>
+      <input type="hidden" name="startedAt" id="formStartedAt">
       <div class="form-row">
         <label class="field"><span>Your name *</span><input name="name" autocomplete="name" required placeholder="Your name"></label>
         <label class="field"><span>Email *</span><input name="email" type="email" autocomplete="email" required placeholder="you@example.com"></label>
@@ -410,8 +413,8 @@
       <label class="field"><span>What are you doing manually? *</span><textarea name="manual" rows="6" required placeholder="Describe the work in your own words. What happens now?"></textarea></label>
       <label class="field"><span>What should happen instead?</span><textarea name="desired" rows="4" placeholder="What would you like to happen automatically?"></textarea></label>
       <label class="field"><span>How often does this happen?</span><input name="frequency" placeholder="Every day, every week, every customer, whenever something arrives..."></label>
-      <button class="button submit" type="submit">Discuss Your Automation <span class="arrow">→</span></button>
-      <p class="form-note">This opens your email app with the Automation Desk message prepared for info@detleng.com.</p>
+      <button class="button submit" type="submit"><span class="submit-label">Send My Automation Brief</span> <span class="arrow">→</span></button>
+      <p class="form-note">Your brief will be sent securely to the DeTLeng Automation Desk. A confirmation will be emailed to you.</p>
       <p class="form-status" id="formStatus" aria-live="polite"></p>
     </form>
   </div>
@@ -451,35 +454,41 @@
   engine?.addEventListener('pointermove',e=>{const r=engine.getBoundingClientRect();engine.style.setProperty('--mx',`${((e.clientX-r.left)/r.width)*100}%`);engine.style.setProperty('--my',`${((e.clientY-r.top)/r.height)*100}%`)});
 
   const form=document.getElementById('automationForm'), status=document.getElementById('formStatus');
-  form?.addEventListener('submit',e=>{
+  const submitButton=form?.querySelector('button[type="submit"]'), submitLabel=submitButton?.querySelector('.submit-label');
+  const API_ENDPOINT='https://automation-detleng-api.onrender.com/api/inquiries';
+  const startedAt=document.getElementById('formStartedAt');
+  if(startedAt) startedAt.value=Date.now().toString();
+
+  form?.addEventListener('submit',async e=>{
     e.preventDefault();
     if(!form.reportValidity()) return;
     const data=new FormData(form);
-    const name=(data.get('name')||'').toString().trim();
-    const email=(data.get('email')||'').toString().trim();
-    const manual=(data.get('manual')||'').toString().trim();
-    const desired=(data.get('desired')||'').toString().trim();
-    const frequency=(data.get('frequency')||'').toString().trim();
-    const subject=`${email} — Automation problem for solution`;
-    const body=[
-      'DeTLeng Automation — Automation Desk',
-      '',
-      `Name: ${name}`,
-      `Email: ${email}`,
-      '',
-      'WHAT ARE YOU DOING MANUALLY?',
-      manual,
-      '',
-      'WHAT SHOULD HAPPEN INSTEAD?',
-      desired || 'Not specified',
-      '',
-      'HOW OFTEN DOES THIS HAPPEN?',
-      frequency || 'Not specified',
-      '',
-      `Submitted from: ${window.location.href}`
-    ].join('\n');
-    status.textContent='Opening your email app with the Automation Desk message ready to send…';
-    window.location.href=`mailto:info@detleng.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const submissionId=form.dataset.submissionId || (crypto.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`);
+    form.dataset.submissionId=submissionId;
+    const payload={submissionId,name:(data.get('name')||'').toString().trim(),email:(data.get('email')||'').toString().trim(),manual:(data.get('manual')||'').toString().trim(),desired:(data.get('desired')||'').toString().trim(),frequency:(data.get('frequency')||'').toString().trim(),website:(data.get('website')||'').toString(),startedAt:(data.get('startedAt')||'').toString(),source:window.location.href};
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),45000);
+    submitButton.disabled=true;
+    submitLabel.textContent='Sending your brief…';
+    status.className='form-status';
+    status.textContent='Securely submitting your automation brief…';
+    try{
+      const response=await fetch(API_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:controller.signal});
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok) throw new Error(result.message || 'Submission failed');
+      status.className='form-status success';
+      status.textContent=`Brief received — check your inbox. Reference: ${result.reference}`;
+      form.reset();
+      delete form.dataset.submissionId;
+      if(startedAt) startedAt.value=Date.now().toString();
+    }catch(error){
+      status.className='form-status error';
+      status.textContent=error.name==='AbortError'?'The request took too long. Your information is still here—please try again.':'We couldn’t submit your brief. Your information is still here—please try again.';
+    }finally{
+      clearTimeout(timeout);
+      submitButton.disabled=false;
+      submitLabel.textContent='Send My Automation Brief';
+    }
   });
 
   document.getElementById('year').textContent=new Date().getFullYear();
