@@ -64,13 +64,47 @@ function makeReference() {
   return `DA-${date}-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
 }
 
-async function sendEmail(message, idempotencyKey) {
+// Submit both distinct messages in one Resend request. Sending them as separate
+// back-to-back requests could exceed Resend's default per-second API limit.
+const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+async function sendBatchEmails(messages, idempotencyKey) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) throw new Error('RESEND_API_KEY is not configured');
-  const response = await fetch('https://api.resend.com/emails', {method:'POST',headers:{Authorization:`Bearer ${apiKey}`,'Content-Type':'application/json','Idempotency-Key':idempotencyKey},body:JSON.stringify(message)});
-  const result = await response.json().catch(() => ({}));
-  if (!response.ok) { const error = new Error(result.message || `Resend rejected the email (${response.status})`); error.status = response.status; throw error; }
-  return result;
+
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const response = await fetch('https://api.resend.com/emails/batch', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'Idempotency-Key': idempotencyKey
+      },
+      body: JSON.stringify(messages)
+    });
+    const result = await response.json().catch(() => ({}));
+    if (response.ok) {
+      if (!Array.isArray(result.data) || result.data.length !== messages.length ||
+          result.data.some(item => !item || typeof item.id !== 'string')) {
+        throw new Error('Resend did not confirm both email submissions');
+      }
+      return result.data;
+    }
+
+    const detail = result.message || `Resend rejected the batch (${response.status})`;
+    if ((response.status === 429 || response.status >= 500) && attempt < 2) {
+      const retryAfter = Number(response.headers?.get('retry-after'));
+      const delay = Number.isFinite(retryAfter) && retryAfter > 0
+        ? Math.min(10000, retryAfter * 1000)
+        : 1100 * (attempt + 1);
+      console.warn(JSON.stringify({event:'resend.batch.retry',status:response.status,attempt:attempt+1}));
+      await wait(delay);
+      continue;
+    }
+    const error = new Error(detail);
+    error.status = response.status;
+    throw error;
+  }
 }
 
 async function submitInquiry(inquiry) {
@@ -81,9 +115,15 @@ async function submitInquiry(inquiry) {
   const replyTo = process.env.INQUIRY_REPLY_TO_EMAIL || adminAddress;
   const admin = adminEmail(complete);
   const acknowledgement = acknowledgementEmail(complete);
-  const adminResult = await sendEmail({from,to:[adminAddress],reply_to:inquiry.email,subject:admin.subject,text:admin.text,html:admin.html}, `${inquiry.submissionId}-admin`);
-  const acknowledgementResult = await sendEmail({from,to:[inquiry.email],reply_to:replyTo,subject:acknowledgement.subject,text:acknowledgement.text,html:acknowledgement.html}, `${inquiry.submissionId}-ack`);
-  return { reference, adminEmailId: adminResult.id, acknowledgementEmailId: acknowledgementResult.id };
+
+  // Put the visitor first; Resend accepts both messages together. Actual inbox
+  // delivery order is controlled by email providers, not by our application.
+  const [ackResult, adminResult] = await sendBatchEmails([
+    {from,to:[inquiry.email],reply_to:replyTo,subject:acknowledgement.subject,text:acknowledgement.text,html:acknowledgement.html},
+    {from,to:[adminAddress],reply_to:inquiry.email,subject:admin.subject,text:admin.text,html:admin.html}
+  ], `${inquiry.submissionId}-inquiry-batch`);
+
+  return {reference,adminEmailId:adminResult.id,acknowledgementEmailId:ackResult.id};
 }
 
 async function handler(req, res) {
@@ -123,4 +163,4 @@ const pruneTimer = setInterval(pruneMemory, 30 * 60 * 1000); pruneTimer.unref();
 
 if (require.main === module) http.createServer(handler).listen(PORT, '0.0.0.0', () => console.log(`automation-detleng-api listening on port ${PORT}`));
 
-module.exports = { handler, validateInquiry, isRateLimited, makeReference };
+module.exports = { handler, validateInquiry, isRateLimited, makeReference, submitInquiry };
